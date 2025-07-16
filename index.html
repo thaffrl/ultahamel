@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Late Birthday Amelia</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to top, #ffe6f0, #e0f7ff);
+      font-family: 'Comic Sans MS', 'Segoe UI', cursive;
+      position: relative;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: float 6s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.8;
+      }
+
+      50% {
+        transform: translateY(-40px) scale(1.2);
+        opacity: 0.4;
+      }
+
+      100% {
+        transform: translateY(-80px) scale(0.8);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      text-align: center;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.85);
+      border-radius: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 400px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transition: opacity 0.5s ease;
+      -webkit-overflow-scrolling: touch;
+      z-index: 1;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* 🎀 Tombol Shine */
+    button {
+      margin-top: 20px;
+      padding: 10px 18px;
+      font-size: 16px;
+      border: none;
+      border-radius: 20px;
+      background-color: #ffd1dc;
+      color: #333;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      background-color: #ffb3c6;
+    }
+
+    button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: skewX(-20deg);
+      transition: left 0.5s ease;
+    }
+
+    button:hover::after {
+      left: 125%;
+    }
+
+    .char {
+      position: absolute;
+      width: 80px;
+      opacity: 0.8;
+    }
+
+    .top-left {
+      top: 20px;
+      left: 20px;
+    }
+
+    .bottom-right {
+      bottom: 20px;
+      right: 20px;
+    }
+
+    .photo {
+      width: 100%;
+      border-radius: 20px;
+      margin-top: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-effect {
+      opacity: 0;
+      animation: fadeIn 0.8s ease forwards;
+    }
+  </style>
+</head>
+
+<body>
+  <audio id="bgm" loop>
+    <source src="sound/photograph.mp3" type="audio/mp3" />
+  </audio>
+  <div class="container fade-in" id="scene" onclick="nextScene()">
+    <p id="text" class="fade-in"></p>
+    <p id="tapNextScene" style="font-size: 14px; margin-top: 10px; color: #777;">(Tap to next)</p>
+    <button id="toUcapan" onclick="showUcapan(event)" style="display:none">🎁 Lihat Ucapannya</button>
+  </div>
+
+  <div class="container hidden" id="ucapan">
+    <h1 class="fade-in">🎂 Happy Late Birthday Amengg</h1>
+    <p class="fade-in">Semoga panjang umur, selalu sehat, selalu bahagia,<br> kuliahnya dilancarkan dan bisa lulus
+      dengan hasil terbaik.</p>
+    <p class="fade-in">Semoga tahun ini membawa kebahagiaan baru dan impian-impianmu satu per satu dikabulkan.</p>
+    <p class="fade-in">Terima kasih sudah jadi dirimu. Tetap semangat terus ya!<br> Kalau butuh istirahat jangan lupa
+      istirahat.</p>
+    <img src="photo.png" class="photo fade-in" alt="Foto Amelia" />
+    <button onclick="showMotivasi()">➡️ Lanjut</button>
+  </div>
+
+  <div class="container hidden" id="motivasi">
+    <p class="fade-in"><em>You are not behind in life. You’re exactly where you need to be.</em></p>
+    <button onclick="showSuratIntro()">💌 Lihat Surat</button>
+  </div>
+
+  <div class="container hidden" id="surat-intro">
+    <p class="fade-in">Maaf banget ya, Meng. Aku sadar ini telat banget... 😔🙏🏻</p>
+    <p class="fade-in">Biasanya aku tahu dari IG Story, tapi IG-ku sempat aku hapus dan aku jarang buka IG.</p>
+    <button onclick="showSurat()">➡️ Lanjut</button>
+  </div>
+
+  <div class="container hidden" id="surat" onclick="nextSurat()">
+    <p id="suratText" class="fade-in"></p>
+    <p id="tapNextSurat" style="font-size: 14px; margin-top: 10px; color: #777;">(Tap to next)</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    window.addEventListener("click", function playMusicOnce() {
+      const bgm = document.getElementById("bgm");
+      bgm.play().catch((e) => {
+        console.warn("Audio tidak dapat diputar otomatis:", e);
+      });
+      window.removeEventListener("click", playMusicOnce);
+    });
+
+    const teks = [
+      "Meng...",
+      "Aku tahu ini telat banget...",
+      "Tapi ada sesuatu yang ingin aku sampaikan..."
+    ];
+    let i = 0;
+
+    const suratKalimat = [
+      "Meskipun ucapanku datang terlambat,",
+      "tapi doaku selalu tepat waktu untukmu.",
+      "🌸 Hope u enjoy this project",
+      "With love— Andin"
+    ];
+    let suratIndex = 0;
+
+    function nextScene() {
+      const textElem = document.getElementById("text");
+      const tapToNext = document.getElementById("tapNextScene");
+
+      if (i < teks.length) {
+        textElem.innerText = teks[i];
+        textElem.classList.remove("fade-in");
+        void textElem.offsetWidth;
+        textElem.classList.add("fade-in");
+
+        if (teks[i] === "Tapi ada sesuatu yang ingin aku sampaikan...") {
+          tapToNext.style.display = "none";
+        } else {
+          tapToNext.classList.remove("fade-in-effect");
+          if (teks[i] === "Meng...") tapToNext.classList.add("fade-in-effect");
+          tapToNext.style.display = "block";
+        }
+
+        if (i === teks.length - 1) {
+          setTimeout(() => {
+            document.getElementById("toUcapan").style.display = "inline-block";
+          }, 700);
+        }
+
+        i++;
+      }
+    }
+
+    function showUcapan(e) {
+      e.stopPropagation();
+      document.getElementById("scene").classList.add("hidden");
+      const ucapan = document.getElementById("ucapan");
+      ucapan.classList.remove("hidden");
+      ucapan.classList.remove("fade-in");
+      void ucapan.offsetWidth;
+      ucapan.classList.add("fade-in");
+      startConfetti();
+    }
+
+    function showMotivasi() {
+      document.getElementById("ucapan").classList.add("hidden");
+      const motivasi = document.getElementById("motivasi");
+      motivasi.classList.remove("hidden");
+      motivasi.classList.remove("fade-in");
+      void motivasi.offsetWidth;
+      motivasi.classList.add("fade-in");
+    }
+
+    function showSuratIntro() {
+      document.getElementById("motivasi").classList.add("hidden");
+      const suratIntro = document.getElementById("surat-intro");
+      suratIntro.classList.remove("hidden");
+      suratIntro.classList.remove("fade-in");
+      void suratIntro.offsetWidth;
+      suratIntro.classList.add("fade-in");
+    }
+
+    function showSurat() {
+      document.getElementById("surat-intro").classList.add("hidden");
+      const surat = document.getElementById("surat");
+      surat.classList.remove("hidden");
+      surat.classList.remove("fade-in");
+      void surat.offsetWidth;
+      surat.classList.add("fade-in");
+      nextSurat();
+    }
+
+    function nextSurat() {
+      const suratElem = document.getElementById("suratText");
+      const tapToNext = document.getElementById("tapNextSurat");
+
+      if (suratIndex < suratKalimat.length) {
+        suratElem.innerText = suratKalimat[suratIndex];
+        suratElem.classList.remove("fade-in");
+        void suratElem.offsetWidth;
+        suratElem.classList.add("fade-in");
+
+        if (suratKalimat[suratIndex] === "With love— Andin") {
+          tapToNext.style.display = "none";
+        } else {
+          tapToNext.classList.remove("fade-in-effect");
+          if (suratKalimat[suratIndex] === "Meskipun ucapanku datang terlambat,") {
+            tapToNext.classList.add("fade-in-effect");
+          }
+          tapToNext.style.display = "block";
+        }
+
+        suratIndex++;
+      }
+    }
+
+    function startConfetti() {
+      const duration = 2000;
+      const end = Date.now() + duration;
+      (function frame() {
+        confetti({ particleCount: 5, spread: 70, origin: { y: 0.6 } });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+
+    // Sparkle generator
+    for (let i = 0; i < 50; i++) {
+      const sparkle = document.createElement("div");
+      sparkle.className = "sparkle";
+      sparkle.style.left = Math.random() * 100 + "vw";
+      sparkle.style.top = Math.random() * 100 + "vh";
+      sparkle.style.animationDelay = Math.random() * 6 + "s";
+      sparkle.style.animationDuration = 4 + Math.random() * 4 + "s";
+      document.body.appendChild(sparkle);
+    }
+
+    window.onload = nextScene;
+  </script>
+</body>
+
+</html>
