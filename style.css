@@ -44,6 +44,10 @@ body {
   z-index: 1;
 }
 
+.container.left-align {
+  text-align: left;
+}
+
 .hidden {
   display: none;
 }
